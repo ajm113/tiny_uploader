@@ -207,7 +207,7 @@ class Tiny_Uploader
 		$fields['client_id'] = $this->client_id;
 		$fields['scope'] = $this->scope; 
 		$fields['redirect_uri'] = $this->redirect_uri;
-		$fields['access_type'] =  $this->get_token_type();
+		$fields['access_type'] =  $this->access_type;
 		$this->_build_post($fields);
 		$response = $this->execute_cmd("https://accounts.google.com/o/oauth2/auth");
 		
