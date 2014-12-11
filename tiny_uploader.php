@@ -18,8 +18,6 @@ class Tiny_Uploader
 	private $use_sessions = TRUE; /* STORE ACCESS TOKEN IN SESSION? */
 	private $session_prefix = "ty_";
 
-
-
 	private $ch = NULL; /* Curl Handler */
 	public  $last_http_response = 0;
 	public  $last_result = 0;
@@ -68,7 +66,10 @@ class Tiny_Uploader
 	{
 		if($this->use_sessions)
 		{
-			return $_SESSION[$this->session_prefix.'youtube_auth']['access_token'];
+			if(isset($_SESSION[$this->session_prefix.'youtube_auth']['access_token']))
+			{
+				return $_SESSION[$this->session_prefix.'youtube_auth']['access_token'];
+			}
 		}
 		
 		return $this->access_token;
@@ -109,7 +110,10 @@ class Tiny_Uploader
 	{
 		if($this->use_sessions)
 		{
-			return $_SESSION[$this->session_prefix.'youtube_auth']['token_type'];
+			if(isset($_SESSION[$this->session_prefix.'youtube_auth']['token_type']))
+			{
+				return $_SESSION[$this->session_prefix.'youtube_auth']['token_type'];
+			}
 		}
 		
 		return $this->token_type;	
@@ -121,7 +125,10 @@ class Tiny_Uploader
 	
 		if($this->use_sessions)
 		{
-			return $_SESSION[$this->session_prefix.'youtube_auth']['refresh_token'];
+			if(isset($_SESSION[$this->session_prefix.'youtube_auth']['refresh_token']))
+			{
+				return $_SESSION[$this->session_prefix.'youtube_auth']['refresh_token'];
+			}
 		}
 		
 		return $this->refresh_token;
@@ -346,13 +353,14 @@ class Tiny_Uploader
 	
 	private function _build_post($data)
 	{
+		$fields_string = "";
 		foreach($data as $key=>$value) { $fields_string .= $key.'='.urlencode($value).'&'; }
 	
 		rtrim($fields_string, '&');
 	
 		if($this->ch)
 		{
-			curl_setopt($this->ch,CURLOPT_POST, count($fields));
+			curl_setopt($this->ch,CURLOPT_POST, count($data));
 			curl_setopt($this->ch,CURLOPT_POSTFIELDS, $fields_string);
 		}
 	
