@@ -18,10 +18,13 @@ class Tiny_Uploader
 	private $use_sessions = TRUE; /* STORE ACCESS TOKEN IN SESSION? */
 	private $session_prefix = "ty_";
 
-	private $ch = NULL; /* Curl Handler */
+	//Used for debugging...
 	public  $last_http_response = 0;
 	public  $last_result = 0;
 	public  $cur_error = "";
+	
+	
+	private $ch = NULL; /* Curl Handler */
 	private $token_type = "Bearer";
 	private $access_token = FALSE;
 	private $refresh_token = "";
@@ -215,6 +218,11 @@ class Tiny_Uploader
 		
 		$this->curl_setup();
 		
+		if(!isset($data['url']))
+		{
+			return "NULL";
+		}
+		
 		return $data['url'];
 	}
 	
@@ -241,7 +249,6 @@ class Tiny_Uploader
 	//Reset cURL data.
 	public function flush_cache()
 	{
-		$this->cur_error = "";
 		if($this->ch)
 		{
 			curl_close($this->ch);
@@ -287,9 +294,8 @@ class Tiny_Uploader
 		}
 		
 		$this->set_access_token($response['access_token']);
-
 		$this->set_token_type($response['token_type']);
-		$this->token_expires = $response['token_expires'];
+		$this->token_expires = $response['expires_in'];
 		
 		return $this->access_token;
 	}
@@ -317,10 +323,10 @@ class Tiny_Uploader
 			return FALSE;
 		}
 		
+
 		$this->set_access_token($response['access_token']);
 		$this->set_token_type($response['token_type']);
-		$this->set_refresh_token($response['refresh_token']);
-		$this->token_expires = $response['token_expires'];
+		$this->token_expires = $response['expires_in'];
 		
 		return $this->access_token;
 	}
